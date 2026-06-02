@@ -1,9 +1,13 @@
 import express from "express";
 import { loggerMiddleware } from "./shared/middlewares/logger.middleware.js";
 import { errorMiddleware } from "./shared/middlewares/error.middleware.js";
+import { rateLimitMiddleware } from "./shared/middlewares/rateLimit.middleware.js";
 
 const app = express();
+
 app.use(loggerMiddleware);
+app.use(rateLimitMiddleware);
+
 app.use(express.json());
 
 app.get("/", (req, res) => {
