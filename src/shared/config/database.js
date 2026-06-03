@@ -1,4 +1,5 @@
 import { Sequelize } from "sequelize";
+import { logger } from "../utils/logger.js";
 
 import { env } from "./env.js";
 
@@ -6,7 +7,10 @@ const sequelize = new Sequelize(env.DB_NAME, env.DB_USER, env.DB_PASSWORD, {
   host: env.DB_HOST,
   port: env.DB_PORT,
   dialect: "mysql",
-  logging: env.NODE_ENV === "development" ? console.log : false,
+  logging:
+    env.NODE_ENV === "development"
+      ? (sql) => logger.info("Sequelize Query", { sql })
+      : false,
   pool: {
     max: 10,
     min: 0,

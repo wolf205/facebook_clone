@@ -1,5 +1,5 @@
 import { Model, DataTypes } from "sequelize";
-import { sequelize } from "../../shared/config/database.js";
+import sequelize from "../../shared/config/database.js";
 
 class Session extends Model {}
 
