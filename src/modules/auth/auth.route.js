@@ -1,7 +1,12 @@
 import express from "express";
 import { authController } from "./auth.controller.js";
 import { validateMiddleware } from "../../shared/middlewares/validate.middleware.js";
-import { registerSchema, loginSchema, logoutSchema } from "./auth.validator.js";
+import {
+  registerSchema,
+  loginSchema,
+  logoutSchema,
+  changePasswordSchema,
+} from "./auth.validator.js";
 import { asyncHandler } from "../../shared/utils/asyncHandler.js";
 import { authMiddleware } from "../../shared/middlewares/auth.middleware.js";
 
@@ -27,5 +32,12 @@ router.post(
 );
 
 router.post("/refresh", asyncHandler(authController.refresh));
+
+router.patch(
+  "/password",
+  authMiddleware,
+  validateMiddleware(changePasswordSchema),
+  asyncHandler(authController.changePassword),
+);
 
 export default router;

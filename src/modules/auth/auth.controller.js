@@ -69,4 +69,18 @@ export const authController = {
       },
     });
   },
+
+  changePassword: async (req, res) => {
+    const userId = req.user.id;
+    const { oldPassword, newPassword } = req.body;
+    const result = await authService.changePassword({
+      userId,
+      oldPassword,
+      newPassword,
+    });
+
+    return response(res, {
+      message: result.message,
+    });
+  },
 };

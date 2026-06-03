@@ -1,3 +1,4 @@
+import { where } from "sequelize";
 import User from "../users/user.model.js";
 import Session from "./session.model.js";
 
@@ -15,6 +16,15 @@ export const authRepository = {
   // Tạo user mới
   createUser: ({ email, passwordHash, firstName, lastName }) => {
     return User.create({ email, passwordHash, firstName, lastName });
+  },
+
+  // Update passwordHash
+  changePassword: async ({ id, passwordHash }) => {
+    const user = await User.findByPk(id);
+    if (!user) return null;
+
+    user.passwordHash = passwordHash;
+    return user.save();
   },
 
   // Lưu refresh token vào bảng refresh_tokens

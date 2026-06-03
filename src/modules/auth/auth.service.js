@@ -124,4 +124,25 @@ export const authService = {
       refreshToken,
     };
   },
+
+  changePassword: async ({ userId, oldPassword, newPassword }) => {
+    const user = await authRepository.findUserById(userId);
+
+    if (!user) {
+      throw new AppError("Không tìm thấy user", 400);
+    }
+
+    const isOldPasswordValid = await bcrypt.compare(oldPassword, user.passwordHash);
+    if (!isOldPasswordValid) {
+      throw new AppError("Mật khẩu hiện tại không chính xác", 400);
+    }
+
+    const passwordHash = await bcrypt.hash(newPassword, 10);
+
+    await authRepository.changePassword({ id: userId, passwordHash});
+
+    return {
+      message: "Đổi mật khẩu thành công",
+    };
+  },
 };
