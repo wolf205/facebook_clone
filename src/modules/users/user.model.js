@@ -1,7 +1,13 @@
 import { Model, DataTypes } from "sequelize";
 import sequelize from "../../shared/config/database.js";
 
-class User extends Model {}
+class User extends Model {
+  toJSON() {
+    const values = { ...this.get() };
+    delete values.passwordHash;
+    return values;
+  }
+}
 
 User.init(
   {
@@ -88,7 +94,7 @@ User.init(
         fields: ["role", "is_active"],
       },
     ],
-  }
+  },
 );
 
 export default User;

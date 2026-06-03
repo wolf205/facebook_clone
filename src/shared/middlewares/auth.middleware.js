@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { env } from "../config/env.js";
-import { reponse } from "../utils/response.js";
+import { response } from "../utils/reponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { AppError } from "../exceptions/AppError.js";
 

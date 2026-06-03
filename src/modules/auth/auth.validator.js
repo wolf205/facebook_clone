@@ -14,3 +14,16 @@ export const registerSchema = {
       .regex(/[^a-zA-Z0-9]/, "Mật khẩu phải chứa ít nhất 1 ký tự đặc biệt"),
   }),
 };
+
+export const loginSchema = {
+  body: z.object({
+    email: z.string().email("Email không hợp lệ"),
+    password: z.string().min(1, "Thiếu password"),
+  }),
+};
+
+export const logoutSchema = {
+  body: z.object({
+    isLogoutAll: z.boolean().optional().default(false),
+  }),
+};

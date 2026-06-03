@@ -1,6 +1,7 @@
 import { authRepository } from "./auth.repository.js";
 import { AppError } from "../../shared/exceptions/AppError.js";
 import bcrypt from "bcrypt";
+import { generateTokens } from "../../shared/config/jwt.js";
 
 export const authService = {
   register: async ({ email, password, firstName, lastName }) => {
@@ -35,5 +36,74 @@ export const authService = {
       email: user.email,
       fullName: user.fullName,
     };
+  },
+
+  login: async ({ email, password }) => {
+    const user = await authRepository.findUserByEmail(email);
+    if (!user) {
+      throw new AppError(
+        "Email hoặc mật khẩu không đúng",
+        401,
+        "INVALID_CREDENTIALS",
+      );
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+    if (!isPasswordValid) {
+      throw new AppError(
+        "Email hoặc mật khẩu không đúng",
+        401,
+        "INVALID_CREDENTIALS",
+      );
+    }
+
+    if (!user.isActive) {
+      throw new AppError("User account is inactive", 403, "USER_INACTIVE");
+    }
+
+    const { accessToken, refreshToken } = generateTokens(user);
+
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 7);
+
+    const session = await authRepository.createSession({
+      userId: user.id,
+      token: refreshToken,
+      expiresAt: expiresAt,
+    });
+
+    if (!session) {
+      throw new AppError(
+        "Tạo session không thành công",
+        500,
+        "ERROR_CREATE_SESSION",
+      );
+    }
+
+    return {
+      accessToken,
+      refreshToken,
+      user: {
+        id: user.id,
+        email: user.email,
+        fullName: user.fullName,
+        role: user.role,
+      },
+    };
+  },
+
+  logout: async ({ refreshToken, isLogoutAll, userId }) => {
+    if (isLogoutAll) {
+      await authRepository.deleteAllSession(userId);
+      return { message: "Đã đăng xuất khỏi tất cả thiết bị" };
+    }
+
+    if (!refreshToken) {
+      throw new AppError("Refresh token không được để trống", 400);
+    }
+
+    await authRepository.deleteSession(refreshToken);
+
+    return { message: "Đăng xuất thành công" };
   },
 };
