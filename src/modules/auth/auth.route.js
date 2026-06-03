@@ -26,4 +26,6 @@ router.post(
   asyncHandler(authController.logout),
 );
 
+router.post("/refresh", asyncHandler(authController.refresh));
+
 export default router;

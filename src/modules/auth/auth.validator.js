@@ -27,3 +27,5 @@ export const logoutSchema = {
     isLogoutAll: z.boolean().optional().default(false),
   }),
 };
+
+

@@ -7,6 +7,11 @@ export const authRepository = {
     return User.findOne({ where: { email } });
   },
 
+  // Tìm user theo id
+  findUserById: (id) => {
+    return User.findOne({ where: { id } });
+  },
+
   // Tạo user mới
   createUser: ({ email, passwordHash, firstName, lastName }) => {
     return User.create({ email, passwordHash, firstName, lastName });

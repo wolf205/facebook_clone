@@ -106,4 +106,22 @@ export const authService = {
 
     return { message: "Đăng xuất thành công" };
   },
+
+  refresh: async (token) => {
+    const existingToken = await authRepository.findSessionByToken(token);
+    if (!existingToken) {
+      throw new AppError("Refresh token không được để trống", 400);
+    }
+
+    const user = await authRepository.findUserById(existingToken.userId);
+
+    const { accessToken, refreshToken } = generateTokens(user);
+
+    await authRepository.deleteSession(token);
+
+    return {
+      accessToken,
+      refreshToken,
+    };
+  },
 };

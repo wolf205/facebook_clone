@@ -48,4 +48,25 @@ export const authController = {
       message: result.message,
     });
   },
+
+  refresh: async (req, res) => {
+    const token = req.cookies.refreshToken;
+
+    const result = await authService.refresh(token);
+
+    res.cookie("refreshToken", result.refreshToken, {
+      httpOnly: true,
+      secure: env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 1000,
+    });
+
+    return response(res, {
+      statusCode: 201,
+      message: "Cấp mới access token thành công.",
+      data: {
+        accessToken: result.accessToken,
+      },
+    });
+  },
 };
