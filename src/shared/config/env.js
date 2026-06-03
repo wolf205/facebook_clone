@@ -7,6 +7,9 @@ const requiredEnvVars = [
   "DB_HOST",
   "JWT_SECRET",
   "NODE_ENV",
+  "CLOUDINARY_CLOUD_NAME",
+  "CLOUDINARY_API_KEY",
+  "CLOUDINARY_API_SECRET",
 ];
 
 requiredEnvVars.forEach((key) => {
@@ -23,4 +26,7 @@ export const env = {
   DB_HOST: process.env.DB_HOST,
   NODE_ENV: process.env.NODE_ENV || "development",
   JWT_SECRET: process.env.JWT_SECRET,
+  CLOUDINARY_NAME: process.env.CLOUDINARY_CLOUD_NAME,
+  CLOUDINARY_KEY: process.env.CLOUDINARY_API_KEY,
+  CLOUDINARY_SECRET: process.env.CLOUDINARY_API_SECRET,
 };

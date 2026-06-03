@@ -3,6 +3,7 @@ import { loggerMiddleware } from "./shared/middlewares/logger.middleware.js";
 import { errorMiddleware } from "./shared/middlewares/error.middleware.js";
 import { rateLimitMiddleware } from "./shared/middlewares/rateLimit.middleware.js";
 import authRoute from "./modules/auth/auth.route.js";
+import uploadRoute from "./modules/uploads/upload.route.js";
 import cookieParser from "cookie-parser";
 
 const app = express();
@@ -18,6 +19,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/uploads", uploadRoute);
 
 app.use(errorMiddleware);
 
