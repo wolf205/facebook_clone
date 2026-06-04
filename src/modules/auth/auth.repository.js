@@ -1,4 +1,3 @@
-import { where } from "sequelize";
 import User from "../users/user.model.js";
 import Session from "./session.model.js";
 

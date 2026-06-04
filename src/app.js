@@ -2,7 +2,9 @@ import express from "express";
 import { loggerMiddleware } from "./shared/middlewares/logger.middleware.js";
 import { errorMiddleware } from "./shared/middlewares/error.middleware.js";
 import { rateLimitMiddleware } from "./shared/middlewares/rateLimit.middleware.js";
+import { authMiddleware } from "./shared/middlewares/auth.middleware.js";
 import authRoute from "./modules/auth/auth.route.js";
+import userRoute from "./modules/users/user.route.js";
 import uploadRoute from "./modules/uploads/upload.route.js";
 import cookieParser from "cookie-parser";
 
@@ -19,7 +21,11 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/auth", authRoute);
+
+app.use(authMiddleware);
+
 app.use("/api/v1/uploads", uploadRoute);
+app.use("/api/v1/users", userRoute);
 
 app.use(errorMiddleware);
 
