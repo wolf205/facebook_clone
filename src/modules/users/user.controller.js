@@ -25,4 +25,19 @@ export const userController = {
       data: result.user,
     });
   },
+
+  updateProfile: async (req, res) => {
+    const id = req.user.id;
+
+    const result = await userService.updateProfile({
+      id,
+      ...req.body,
+    });
+
+    return response(res, {
+      message: "Cập nhật profile thành công",
+      statusCode: 200,
+      data: result,
+    });
+  },
 };
