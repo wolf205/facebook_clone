@@ -22,6 +22,11 @@ PostMedia.init(
       allowNull: true,
     },
 
+    publicId: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+
     mediaType: {
       type: DataTypes.ENUM("image", "video"),
       allowNull: true,

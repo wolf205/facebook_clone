@@ -2,15 +2,17 @@ import { postRepository } from "./post.repository.js";
 import { AppError } from "../../shared/exceptions/AppError.js";
 import { getMediaTypeFromUrl } from "../../shared/utils/file.js";
 import sequelize from "../../shared/config/database.js";
+import { cloudinaryService } from "../../integrations/cloudinary/cloudinary.service.js";
 
 export const postService = {
   createPost: async ({ id, content, privacy, media }) => {
     const t = await sequelize.transaction();
 
     try {
-      const formattedMedia = media.map((url, index) => ({
-        mediaUrl: url,
-        mediaType: getMediaTypeFromUrl(url),
+      const formattedMedia = media.map((item, index) => ({
+        mediaUrl: item.url,
+        publicId: item.publicId,
+        mediaType: getMediaTypeFromUrl(item.url),
         orderIndex: index,
       }));
 
@@ -52,10 +54,10 @@ export const postService = {
         );
 
         if (media.length > 0) {
-          const formattedMedia = media.map((url, index) => ({
-            postId,
-            mediaUrl: url,
-            mediaType: getMediaTypeFromUrl(url),
+          const formattedMedia = media.map((item, index) => ({
+            mediaUrl: item.url,
+            publicId: item.publicId,
+            mediaType: getMediaTypeFromUrl(item.url),
             orderIndex: index,
           }));
 
@@ -98,6 +100,12 @@ export const postService = {
         "Bạn không có quyền xóa bài viết này",
         403,
         "POST_FORBIDDEN",
+      );
+    }
+
+    if (post.media?.length > 0) {
+      await Promise.all(
+        post.media.map((m) => cloudinaryService.deleteFile(m.publicId)),
       );
     }
 

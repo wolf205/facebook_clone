@@ -6,7 +6,7 @@ export const postController = {
     const id = req.user.id;
     const { content, privacy, media } = req.body;
 
-    await postService.createPost({
+    const post = await postService.createPost({
       id,
       content,
       privacy,
@@ -16,6 +16,7 @@ export const postController = {
     return response(res, {
       message: "Tạo bài viết thành công",
       statusCode: 201,
+      data: post,
     });
   },
 

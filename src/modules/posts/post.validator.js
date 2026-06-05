@@ -1,5 +1,14 @@
 import { z } from "zod";
 
+const mediaSchema = z
+  .array(
+    z.object({
+      url: z.string().url("Đường dẫn media không đúng định dạng URL"),
+      publicId: z.string().min(1, "Thiếu publicId"),
+    }),
+  )
+  .max(10, "Một bài viết không được vượt quá 10 file media");
+
 export const createPostSchema = z.object({
   body: z.object({
     content: z
@@ -15,11 +24,7 @@ export const createPostSchema = z.object({
       }),
     }),
 
-    media: z
-      .array(z.string().url("Đường dẫn media không đúng định dạng URL"))
-      .max(10, "Một bài viết không được vượt quá 10 file media")
-      .optional()
-      .default([]),
+    media: mediaSchema.optional().default([]),
   }),
 });
 
@@ -41,10 +46,7 @@ export const updatePostSchema = z.object({
       })
       .optional(),
 
-    media: z
-      .array(z.string().url("Đường dẫn media không đúng định dạng URL"))
-      .max(10, "Một bài viết không được vượt quá 10 file media")
-      .optional(),
+    media: mediaSchema.optional(),
   }),
 });
 export const postIdSchema = z.object({
