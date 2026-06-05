@@ -73,4 +73,36 @@ export const postService = {
       throw error;
     }
   },
+
+  getPost: async (postId) => {
+    const post = await postRepository.getPostById(postId);
+
+    if (!post) {
+      throw new AppError("Bài post không tồn tại", 400, "NOT_FOUND_POST");
+    }
+
+    return {
+      post,
+    };
+  },
+
+  deletePost: async ({ userId, postId }) => {
+    const post = await postRepository.getPostById(postId);
+
+    if (!post) {
+      throw new AppError("Bài viết không tồn tại", 400, "NOT_FOUND_POST");
+    }
+
+    if (post.authorId !== userId) {
+      throw new AppError(
+        "Bạn không có quyền xóa bài viết này",
+        403,
+        "POST_FORBIDDEN",
+      );
+    }
+
+    await postRepository.deletePostById(postId);
+
+    return;
+  },
 };

@@ -13,6 +13,10 @@ export const setupAssociations = () => {
   Post.belongsTo(User, { foreignKey: "authorId", as: "author" });
 
   // Post && PostMedia
-  Post.hasMany(PostMedia, { foreignKey: "postId", as: "media" });
+  Post.hasMany(PostMedia, {
+    foreignKey: "postId",
+    as: "media",
+    onDelete: "CASCADE",
+  });
   PostMedia.belongsTo(Post, { foreignKey: "postId", as: "post" });
 };

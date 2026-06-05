@@ -31,4 +31,28 @@ export const postController = {
       data: result,
     });
   },
+
+  getPost: async (req, res) => {
+    const postId = req.params.id;
+
+    const result = await postService.getPost(postId);
+
+    return response(res, {
+      message: "Lấy bài viết thành công",
+      statusCode: 200,
+      data: result,
+    });
+  },
+
+  deletePost: async (req, res) => {
+    const userId = req.user.id;
+    const postId = req.params.id;
+
+    await postService.deletePost({ userId, postId });
+
+    return response(res, {
+      message: "Xoá bài viết thành công",
+      statusCode: 200,
+    });
+  },
 };

@@ -1,5 +1,6 @@
 import Post from "./post.model.js";
 import PostMedia from "./postMedia.model.js";
+import User from "../users/user.model.js";
 
 export const postRepository = {
   createPost: async (
@@ -46,5 +47,25 @@ export const postRepository = {
 
   insertMedia: async ({ formattedMedia }, options = {}) => {
     return await PostMedia.bulkCreate(formattedMedia, options);
+  },
+
+  getPostById: async (postId) => {
+    return await Post.findByPk(postId, {
+      include: [
+        {
+          model: User,
+          as: "author",
+          attributes: { exclude: ["passwordHash"] },
+        },
+        {
+          model: PostMedia,
+          as: "media",
+        },
+      ],
+    });
+  },
+
+  deletePostById: async (postId) => {
+    return await Post.destroy({ where: { id: postId } });
   },
 };
