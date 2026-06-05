@@ -38,7 +38,7 @@ Post.init(
       allowNull: false,
     },
 
-    commnetCount: {
+    commentCount: {
       type: DataTypes.INTEGER,
       defaultValue: 0,
       allowNull: false,

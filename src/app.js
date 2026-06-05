@@ -6,6 +6,7 @@ import { authMiddleware } from "./shared/middlewares/auth.middleware.js";
 import authRoute from "./modules/auth/auth.route.js";
 import userRoute from "./modules/users/user.route.js";
 import uploadRoute from "./modules/uploads/upload.route.js";
+import postRoute from "./modules/posts/post.route.js";
 import cookieParser from "cookie-parser";
 
 const app = express();
@@ -26,6 +27,7 @@ app.use(authMiddleware);
 
 app.use("/api/v1/uploads", uploadRoute);
 app.use("/api/v1/users", userRoute);
+app.use("/api/v1/posts", postRoute);
 
 app.use(errorMiddleware);
 
