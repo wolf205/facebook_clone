@@ -33,4 +33,44 @@ export const postService = {
       throw error;
     }
   },
+
+  updatePost: async ({ postId, updateData }) => {
+    const t = await sequelize.transaction();
+
+    try {
+      const { media, content, privacy } = updateData;
+
+      const post = await postRepository.updatePost(
+        { postId, content, privacy },
+        { transaction: t },
+      );
+
+      if (media !== undefined) {
+        await postRepository.deleteMediaByPostId(
+          { postId },
+          { transaction: t },
+        );
+
+        if (media.length > 0) {
+          const formattedMedia = media.map((url, index) => ({
+            postId,
+            mediaUrl: url,
+            mediaType: getMediaTypeFromUrl(url),
+            orderIndex: index,
+          }));
+
+          await postRepository.insertMedia(
+            { formattedMedia },
+            { transaction: t },
+          );
+        }
+      }
+
+      await t.commit();
+      return;
+    } catch (error) {
+      await t.rollback();
+      throw error;
+    }
+  },
 };

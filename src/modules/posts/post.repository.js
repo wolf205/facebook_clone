@@ -26,4 +26,25 @@ export const postRepository = {
 
     return post;
   },
+
+  updatePost: async ({ postId, content, privacy }, options = {}) => {
+    return await Post.update(
+      { content, privacy },
+      {
+        where: { id: postId },
+        ...options,
+      },
+    );
+  },
+
+  deleteMediaByPostId: async ({ postId }, options = {}) => {
+    return await PostMedia.destroy({
+      where: { postId },
+      ...options,
+    });
+  },
+
+  insertMedia: async ({ formattedMedia }, options = {}) => {
+    return await PostMedia.bulkCreate(formattedMedia, options);
+  },
 };
