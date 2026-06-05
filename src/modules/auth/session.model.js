@@ -15,10 +15,6 @@ Session.init(
     userId: {
       type: DataTypes.UUID, // Thay đổi type tương ứng với id của bảng users (VD: UUID hoặc INTEGER)
       allowNull: false,
-      references: {
-        model: "users", // Tên bảng tham chiếu tới
-        key: "id", // Tên cột tham chiếu tới
-      },
     },
 
     token: {

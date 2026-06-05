@@ -15,10 +15,6 @@ PostMedia.init(
     postId: {
       type: DataTypes.UUID,
       allowNull: false,
-      references: {
-        model: "posts",
-        key: "id",
-      },
     },
 
     mediaUrl: {

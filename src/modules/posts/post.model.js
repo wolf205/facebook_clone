@@ -15,10 +15,6 @@ Post.init(
     authorId: {
       type: DataTypes.UUID,
       allowNull: false,
-      references: {
-        model: "users",
-        key: "id",
-      },
     },
 
     content: {

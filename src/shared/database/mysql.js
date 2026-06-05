@@ -1,7 +1,6 @@
 import sequelize from "../config/database.js";
 import { logger } from "../utils/logger.js";
 
-
 export const connectToMySQL = async () => {
   try {
     await sequelize.authenticate();
