@@ -1,6 +1,7 @@
 import { AppError } from "../../shared/exceptions/AppError.js";
 import { friendRepository } from "./friend.repository.js";
 import { userRepository } from "../users/user.repository.js";
+import sequelize from "../../shared/config/database.js";
 
 export const friendService = {
   sendFriendRequest: async ({ senderId, receiverId }) => {
@@ -32,6 +33,79 @@ export const friendService = {
     }
 
     await friendRepository.createFriendRequest({ senderId, receiverId });
+
+    return;
+  },
+
+  acceptFriendRequest: async ({ userId, requestId }) => {
+    const friendRequest =
+      await friendRepository.getFriendRequestById(requestId);
+
+    if (!friendRequest || friendRequest.status !== "pending") {
+      throw new AppError(
+        "Yêu cầu kết bạn không tồn tại hoặc đã được xử lý",
+        400,
+        "NOT_FOUND_FRIEND_REQUEST",
+      );
+    }
+
+    if (friendRequest.receiverId !== userId) {
+      throw new AppError(
+        "Bạn không có quyền chấp nhận yêu cầu kết bạn",
+        403,
+        "UN_AUTHORIZATION",
+      );
+    }
+
+    const friendId = friendRequest.senderId;
+
+    const t = await sequelize.transaction();
+
+    try {
+      await friendRepository.acceptFriendRequest(
+        { requestId },
+        { transaction: t },
+      );
+
+      await friendRepository.createFriendship(
+        { userId, friendId },
+        { transaction: t },
+      );
+
+      await t.commit();
+    } catch (error) {
+      await t.rollback();
+      throw new AppError(
+        `Lỗi không thể ghi dữ liệu: ${error.message}`,
+        500,
+        "INTERNAL_SERVER_ERROR",
+      );
+    }
+
+    return;
+  },
+
+  rejectFriendRequest: async ({ userId, requestId }) => {
+    const friendRequest =
+      await friendRepository.getFriendRequestById(requestId);
+
+    if (!friendRequest || friendRequest.status !== "pending") {
+      throw new AppError(
+        "Yêu cầu kết bạn không tồn tại hoặc đã được xử lý",
+        400,
+        "NOT_FOUND_FRIEND_REQUEST",
+      );
+    }
+
+    if (friendRequest.receiverId !== userId) {
+      throw new AppError(
+        "Bạn không có quyền từ chối yêu cầu kết bạn",
+        403,
+        "UN_AUTHORIZATION",
+      );
+    }
+
+    await friendRepository.rejectFriendRequest(requestId);
 
     return;
   },

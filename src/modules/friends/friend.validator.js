@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-export const sendFriendRequestSchema = z.object({
+export const idSchema = z.object({
   params: z.object({
-    id: z.string().uuid("Id người nhận không hợp lệ"),
+    id: z.string().uuid("Id không hợp lệ"),
   }),
 });

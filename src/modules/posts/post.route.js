@@ -13,21 +13,25 @@ const router = express.Router();
 router.post(
   "/",
   validateMiddleware(createPostSchema),
-  postController.createPost,
+  asyncHandler(postController.createPost),
 );
 
 router.patch(
   "/:id",
   validateMiddleware(updatePostSchema),
-  postController.updatePost,
+  asyncHandler(postController.updatePost),
 );
 
-router.get("/:id", validateMiddleware(postIdSchema), postController.getPost);
+router.get(
+  "/:id",
+  validateMiddleware(postIdSchema),
+  asyncHandler(postController.getPost),
+);
 
 router.delete(
   "/:id",
   validateMiddleware(postIdSchema),
-  postController.deletePost,
+  asyncHandler(postController.deletePost),
 );
 
 export default router;
