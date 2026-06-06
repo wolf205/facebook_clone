@@ -5,8 +5,10 @@ import { env } from "./shared/config/env.js";
 import { logger } from "./shared/utils/logger.js";
 import User from "./modules/users/user.model.js";
 import Session from "./modules/auth/session.model.js";
-import Post  from "./modules/posts/post.model.js";
+import Post from "./modules/posts/post.model.js";
 import PostMedia from "./modules/posts/postMedia.model.js";
+import FriendRequest from "./modules/friends/friendRequest.model.js";
+import Friendship from "./modules/friends/friendship.model.js";
 
 const startServer = async () => {
   try {
