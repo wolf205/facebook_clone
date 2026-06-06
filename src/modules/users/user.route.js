@@ -9,8 +9,16 @@ const router = express.Router();
 
 router.get("/me", asyncHandler(userController.getMyProfile));
 
-router.get("/:id", asyncHandler(userController.getProfileById));
+router.get(
+  "/:id",
+  validateMiddleware(getUserByIdSchema),
+  asyncHandler(userController.getProfileById),
+);
 
-router.patch("/me", asyncHandler(userController.updateProfile));
+router.patch(
+  "/me",
+  validateMiddleware(updateProfileSchema),
+  asyncHandler(userController.updateProfile),
+);
 
 export default router;

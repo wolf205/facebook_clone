@@ -22,9 +22,10 @@ export const postController = {
 
   updatePost: async (req, res) => {
     const postId = req.params.id;
+    const userId = req.user?.id;
     const updateData = req.body;
 
-    const result = await postService.updatePost({ postId, updateData });
+    const result = await postService.updatePost({ userId, postId, updateData });
 
     return response(res, {
       message: "Updated bài viết thành công",

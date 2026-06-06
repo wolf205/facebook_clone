@@ -113,7 +113,16 @@ export const authService = {
       throw new AppError("Refresh token không được để trống", 400);
     }
 
+    if (existingToken.expiresAt < new Date()) {
+      await authRepository.deleteSession(token);
+      throw new AppError("Refresh token đã hết hạn", 401, "TOKEN_EXPIRED");
+    }
+
     const user = await authRepository.findUserById(existingToken.userId);
+
+    if (user.isActive !== true) {
+      throw new AppError("Tài khoản này đã bị khóa", 403, "ACCOUT_IS_LOCKED");
+    }
 
     const { accessToken, refreshToken } = generateTokens(user);
 
@@ -132,14 +141,17 @@ export const authService = {
       throw new AppError("Không tìm thấy user", 400);
     }
 
-    const isOldPasswordValid = await bcrypt.compare(oldPassword, user.passwordHash);
+    const isOldPasswordValid = await bcrypt.compare(
+      oldPassword,
+      user.passwordHash,
+    );
     if (!isOldPasswordValid) {
       throw new AppError("Mật khẩu hiện tại không chính xác", 400);
     }
 
     const passwordHash = await bcrypt.hash(newPassword, 10);
 
-    await authRepository.changePassword({ id: userId, passwordHash});
+    await authRepository.changePassword({ id: userId, passwordHash });
 
     return {
       message: "Đổi mật khẩu thành công",

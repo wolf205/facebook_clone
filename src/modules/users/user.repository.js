@@ -10,10 +10,8 @@ export const userRepository = {
     if (!user) return null;
 
     user.set(updateData);
-    user.save();
+    await user.save();
 
     return user;
   },
-
-  
 };

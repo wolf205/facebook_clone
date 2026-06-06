@@ -1,4 +1,3 @@
-import { where } from "sequelize";
 import FriendRequest from "./friendRequest.model.js";
 import Friendship from "./friendship.model.js";
 
@@ -9,7 +8,12 @@ export const friendRepository = {
 
   isExistsRequest: async ({ senderId, receiverId }) => {
     return await FriendRequest.findOne({
-      where: { senderId, receiverId },
+      where: {
+        [Op.or]: [
+          { senderId: senderId, receiverId: receiverId }, 
+          { senderId: receiverId, receiverId: senderId }, 
+        ],
+      },
       attributes: ["id"],
     });
   },

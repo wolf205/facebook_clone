@@ -9,7 +9,7 @@ const mediaSchema = z
   )
   .max(10, "Một bài viết không được vượt quá 10 file media");
 
-export const createPostSchema = z.object({
+export const createPostSchema = {
   body: z.object({
     content: z
       .string({ required_error: "Nội dung bài viết là bắt buộc" })
@@ -26,9 +26,9 @@ export const createPostSchema = z.object({
 
     media: mediaSchema.optional().default([]),
   }),
-});
+};
 
-export const updatePostSchema = z.object({
+export const updatePostSchema = {
   body: z.object({
     content: z
       .string()
@@ -48,9 +48,9 @@ export const updatePostSchema = z.object({
 
     media: mediaSchema.optional(),
   }),
-});
-export const postIdSchema = z.object({
+};
+export const postIdSchema = {
   params: z.object({
     id: z.string().uuid("Id bài viết không hợp lệ"),
   }),
-});
+};

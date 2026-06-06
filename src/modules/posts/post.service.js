@@ -36,7 +36,21 @@ export const postService = {
     }
   },
 
-  updatePost: async ({ postId, updateData }) => {
+  updatePost: async ({ userId, postId, updateData }) => {
+    const post = await postRepository.getPostById(postId);
+
+    if (!post) {
+      throw new AppError("Bài viết không tồn tại", 400, "NOT_FOUND_POST");
+    }
+
+    if (post.authorId !== userId) {
+      throw new AppError(
+        "Bạn không có quyền sửa bài viết này",
+        403,
+        "POST_FORBIDDEN",
+      );
+    }
+
     const t = await sequelize.transaction();
 
     try {

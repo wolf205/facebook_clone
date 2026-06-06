@@ -19,7 +19,7 @@ export const authController = {
       httpOnly: true,
       secure: env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 1000,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     return response(res, {
@@ -44,7 +44,7 @@ export const authController = {
     });
 
     return response(res, {
-      statusCode: 201,
+      statusCode: 200,
       message: result.message,
     });
   },
@@ -58,11 +58,11 @@ export const authController = {
       httpOnly: true,
       secure: env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 1000,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     return response(res, {
-      statusCode: 201,
+      statusCode: 200,
       message: "Cấp mới access token thành công.",
       data: {
         accessToken: result.accessToken,
