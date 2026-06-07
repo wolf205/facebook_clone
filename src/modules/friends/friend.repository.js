@@ -56,24 +56,31 @@ export const friendRepository = {
     const offset = (page - 1) * limit;
 
     const userSearchCondition = search
-      ? {
-          [Op.or]: [
-            { firstName: { [Op.like]: `%${search}%` } },
-            { lastName: { [Op.like]: `%${search}%` } },
-          ],
-        }
-      : {};
+      ? sequelize.where(
+          sequelize.fn(
+            "LOWER",
+            sequelize.fn(
+              "CONCAT",
+              sequelize.col("friendInfo.last_name"),
+              " ",
+              sequelize.col("friendInfo.first_name"),
+            ),
+          ),
+          "LIKE",
+          `%${search.toLowerCase()}%`,
+        )
+      : null;
 
     const { count, rows } = await Friendship.findAndCountAll({
       where: { userId },
-      limit,
-      offset,
+      limit: parseInt(limit),   
+      offset: parseInt(offset),
       include: [
         {
           model: User,
           as: "friendInfo",
-          attributes: ["id", "fullName", "avatarUrl"],
-          where: userSearchCondition,
+          attributes: ["id", "firstName", "lastName", "avatarUrl", "fullName"],
+          where: userSearchCondition ?? undefined,
         },
       ],
       order: [["createdAt", "DESC"]],

@@ -8,8 +8,8 @@ export const idSchema = {
 
 export const getListFriendSchema = {
   query: z.object({
-    page: z.coerce.number().int().positive().optional(),
-    limit: z.coerce.number().int().positive().optional(),
-    search: z.string().optional(),
+    page: z.coerce.number().int().positive().default(1),
+    limit: z.coerce.number().int().positive().max(50).default(10),
+    search: z.string().trim().optional(),
   }),
 };

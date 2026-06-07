@@ -3,6 +3,8 @@ import { friendRepository } from "./friend.repository.js";
 import { userRepository } from "../users/user.repository.js";
 import sequelize from "../../shared/config/database.js";
 
+const escapeLike = (str) => str.replace(/[%_\\]/g, "\\$&");
+
 export const friendService = {
   sendFriendRequest: async ({ senderId, receiverId }) => {
     if (senderId === receiverId) {
@@ -111,11 +113,12 @@ export const friendService = {
   },
 
   getFriendList: async ({ userId, page, limit, search }) => {
+    const normalizedSearch = search ? escapeLike(search.trim()) : null;
     const result = await friendRepository.getFriendList({
       userId,
       page,
       limit,
-      search,
+      search: normalizedSearch,
     });
 
     return {
