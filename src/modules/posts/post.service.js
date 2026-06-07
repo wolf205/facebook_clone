@@ -56,7 +56,7 @@ export const postService = {
     try {
       const { media, content, privacy } = updateData;
 
-      const post = await postRepository.updatePost(
+      await postRepository.updatePost(
         { postId, content, privacy },
         { transaction: t },
       );
@@ -83,6 +83,13 @@ export const postService = {
       }
 
       await t.commit();
+
+      if (media !== undefined && post.media?.length > 0) {
+        await Promise.all(
+          post.media.map((m) => cloudinaryService.deleteFile(m.publicId)),
+        );
+      }
+
       return;
     } catch (error) {
       await t.rollback();

@@ -1,5 +1,8 @@
+import User from "../users/user.model.js";
 import FriendRequest from "./friendRequest.model.js";
 import Friendship from "./friendship.model.js";
+import { Op } from "sequelize";
+import sequelize from "../../shared/config/database.js";
 
 export const friendRepository = {
   createFriendRequest: async ({ senderId, receiverId }) => {
@@ -10,8 +13,8 @@ export const friendRepository = {
     return await FriendRequest.findOne({
       where: {
         [Op.or]: [
-          { senderId: senderId, receiverId: receiverId }, 
-          { senderId: receiverId, receiverId: senderId }, 
+          { senderId: senderId, receiverId: receiverId },
+          { senderId: receiverId, receiverId: senderId },
         ],
       },
       attributes: ["id"],
@@ -47,5 +50,41 @@ export const friendRepository = {
       ],
       options,
     );
+  },
+
+  getFriendList: async ({ userId, page, limit, search }) => {
+    const offset = (page - 1) * limit;
+
+    const userSearchCondition = search
+      ? {
+          [Op.or]: [
+            { firstName: { [Op.like]: `%${search}%` } },
+            { lastName: { [Op.like]: `%${search}%` } },
+          ],
+        }
+      : {};
+
+    const { count, rows } = await Friendship.findAndCountAll({
+      where: { userId },
+      limit,
+      offset,
+      include: [
+        {
+          model: User,
+          as: "friendInfo",
+          attributes: ["id", "fullName", "avatarUrl"],
+          where: userSearchCondition,
+        },
+      ],
+      order: [["createdAt", "DESC"]],
+    });
+
+    return {
+      totalItems: count,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
+      limit,
+      friends: rows,
+    };
   },
 };

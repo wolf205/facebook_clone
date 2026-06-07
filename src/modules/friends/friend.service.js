@@ -109,4 +109,17 @@ export const friendService = {
 
     return;
   },
+
+  getFriendList: async ({ userId, page, limit, search }) => {
+    const result = await friendRepository.getFriendList({
+      userId,
+      page,
+      limit,
+      search,
+    });
+
+    return {
+      result,
+    };
+  },
 };

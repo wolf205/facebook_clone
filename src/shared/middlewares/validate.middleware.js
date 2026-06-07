@@ -8,7 +8,11 @@ export const validateMiddleware = (schema) => {
         req.body = schema.body.parse(req.body);
       }
       if (schema.query) {
-        req.query = schema.query.parse(req.query);
+        const parsedQuery = schema.query.parse(req.query);
+        for (const key in req.query) {
+          delete req.query[key];
+        }
+        Object.assign(req.query, parsedQuery);
       }
       if (schema.params) {
         req.params = schema.params.parse(req.params);

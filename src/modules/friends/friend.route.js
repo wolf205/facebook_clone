@@ -1,6 +1,6 @@
 import express from "express";
 import { validateMiddleware } from "../../shared/middlewares/validate.middleware.js";
-import { idSchema } from "./friend.validator.js";
+import { idSchema, getListFriendSchema } from "./friend.validator.js";
 import { friendController } from "./friend.controller.js";
 import { asyncHandler } from "../../shared/utils/asyncHandler.js";
 
@@ -22,6 +22,12 @@ router.patch(
   "/reject/:id",
   validateMiddleware(idSchema),
   asyncHandler(friendController.rejectFriendRequest),
+);
+
+router.get(
+  "/",
+  validateMiddleware(getListFriendSchema),
+  asyncHandler(friendController.getFriendList),
 );
 
 export default router;

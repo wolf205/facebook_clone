@@ -37,4 +37,22 @@ export const friendController = {
       statusCode: 200,
     });
   },
+
+  getFriendList: async (req, res) => {
+    const userId = req.user?.id;
+    const { page, limit, search } = req.query;
+
+    const result = await friendService.getFriendList({
+      userId,
+      page,
+      limit,
+      search,
+    });
+
+    return response(res, {
+      message: "Lấy danh sách bạn bè thành công",
+      statusCode: 200,
+      data: result,
+    });
+  },
 };
