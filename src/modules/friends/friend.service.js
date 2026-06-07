@@ -125,4 +125,36 @@ export const friendService = {
       result,
     };
   },
+
+  unfriend: async ({ userId, friendId }) => {
+    const existingFriendship = friendRepository.isExistsFriendship({
+      userId,
+      friendId,
+    });
+
+    if (!existingFriendship) {
+      throw new AppError("Hai người không phải là bạn bè", 400, "BAD_REQUEST");
+    }
+
+    const t = await sequelize.transaction();
+
+    try {
+      await friendRepository.deleteFriendship(
+        { userId, friendId },
+        { transaction: t },
+      );
+
+      await friendRepository.deleteFriendRequest(
+        { userId, friendId },
+        { transaction: t },
+      );
+
+      (await t).commit();
+    } catch (error) {
+      await t.rollback();
+      throw new AppError(`Lỗi khi unfriend: ${error.message}`, 500);
+    }
+
+    return;
+  },
 };

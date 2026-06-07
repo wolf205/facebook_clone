@@ -30,4 +30,10 @@ router.get(
   asyncHandler(friendController.getFriendList),
 );
 
+router.delete(
+  "/unfriend/:id",
+  validateMiddleware(idSchema),
+  asyncHandler(friendController.unfriend),
+);
+
 export default router;

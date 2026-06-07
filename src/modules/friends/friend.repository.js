@@ -73,7 +73,7 @@ export const friendRepository = {
 
     const { count, rows } = await Friendship.findAndCountAll({
       where: { userId },
-      limit: parseInt(limit),   
+      limit: parseInt(limit),
       offset: parseInt(offset),
       include: [
         {
@@ -93,5 +93,40 @@ export const friendRepository = {
       limit,
       friends: rows,
     };
+  },
+
+  isExistsFriendship: async ({ userId, friendId }) => {
+    return await Friendship.findOne({
+      where: {
+        [Op.or]: [
+          { userId, friendId },
+          { friendId: userId, userId: friendId },
+        ],
+      },
+    });
+  },
+
+  deleteFriendship: async ({ userId, friendId }, options = {}) => {
+    return await Friendship.destroy({
+      where: {
+        [Op.or]: [
+          { userId, friendId },
+          { userId: friendId, friendId: userId },
+        ],
+      },
+      ...options,
+    });
+  },
+
+  deleteFriendRequest: async ({ userId, friendId }, options = {}) => {
+    return await FriendRequest.destroy({
+      where: {
+        [Op.or]: [
+          { senderId: userId, receiverId: friendId },
+          { senderId: friendId, receiverId: userId },
+        ],
+      },
+      ...options,
+    });
   },
 };

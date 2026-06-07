@@ -55,4 +55,16 @@ export const friendController = {
       data: result,
     });
   },
+
+  unfriend: async (req, res) => {
+    const userId = req.user?.id;
+    const friendId = req.params?.id;
+
+    await friendService.unfriend({ userId, friendId });
+
+    return response(res, {
+      message: "Huỷ kết bạn thành công",
+      statusCode: 200,
+    });
+  },
 };
