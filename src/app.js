@@ -8,6 +8,7 @@ import userRoute from "./modules/users/user.route.js";
 import uploadRoute from "./modules/uploads/upload.route.js";
 import postRoute from "./modules/posts/post.route.js";
 import friendRoute from "./modules/friends/friend.route.js";
+import chatRoute from "./modules/chats/chat.route.js";
 import cookieParser from "cookie-parser";
 
 const app = express();
@@ -30,6 +31,7 @@ app.use("/api/v1/uploads", uploadRoute);
 app.use("/api/v1/users", userRoute);
 app.use("/api/v1/posts", postRoute);
 app.use("/api/v1/friends", friendRoute);
+app.use("/api/v1/chats", chatRoute);
 
 app.use(errorMiddleware);
 
