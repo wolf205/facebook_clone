@@ -124,13 +124,13 @@ export const postService = {
       );
     }
 
+    await postRepository.deletePostById(postId);
+
     if (post.media?.length > 0) {
       await Promise.all(
         post.media.map((m) => cloudinaryService.deleteFile(m.publicId)),
       );
     }
-
-    await postRepository.deletePostById(postId);
 
     return;
   },

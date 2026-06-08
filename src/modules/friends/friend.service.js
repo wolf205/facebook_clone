@@ -127,7 +127,7 @@ export const friendService = {
   },
 
   unfriend: async ({ userId, friendId }) => {
-    const existingFriendship = friendRepository.isExistsFriendship({
+    const existingFriendship = await friendRepository.isExistsFriendship({
       userId,
       friendId,
     });
@@ -149,7 +149,7 @@ export const friendService = {
         { transaction: t },
       );
 
-      (await t).commit();
+      await t.commit();
     } catch (error) {
       await t.rollback();
       throw new AppError(`Lỗi khi unfriend: ${error.message}`, 500);

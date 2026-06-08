@@ -15,7 +15,7 @@ export const updateProfileSchema = {
       .optional(),
     lastName: z.string().trim().min(1, "Thiếu lastName").optional(),
     bio: z.string().max(500, "Bio không thể dài quă 500 ký tự").optional(),
-    avataUrl: z.string().url("Định dạng URL không hợp lệ").optional(),
+    avatarUrl: z.string().url("Định dạng URL không hợp lệ").optional(),
     coverPhotoUrl: z.string().url("Định dạng URL không hợp lệ").optional(),
   }),
 };

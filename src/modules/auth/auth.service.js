@@ -128,6 +128,15 @@ export const authService = {
 
     await authRepository.deleteSession(token);
 
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 7);
+
+    const session = await authRepository.createSession({
+      userId: user.id,
+      token: refreshToken,
+      expiresAt: expiresAt,
+    });
+
     return {
       accessToken,
       refreshToken,

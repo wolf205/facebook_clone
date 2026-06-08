@@ -4,6 +4,10 @@ import Post from "../../modules/posts/post.model.js";
 import PostMedia from "../../modules/posts/postMedia.model.js";
 import FriendRequest from "../../modules/friends/friendRequest.model.js";
 import Friendship from "../../modules/friends/friendship.model.js";
+import Participant from "../../modules/chats/models/participant.model.js";
+import Conversation from "../../modules/chats/models/conversation.model.js";
+import Message from "../../modules/chats/models/message.model.js";
+import MessageMedia from "../../modules/chats/models/messageMedia.model.js";
 
 export const setupAssociations = () => {
   // Auth & User
@@ -37,4 +41,49 @@ export const setupAssociations = () => {
 
   Friendship.belongsTo(User, { foreignKey: "userId", as: "user" });
   Friendship.belongsTo(User, { foreignKey: "friendId", as: "friendInfo" });
+
+  // Conversation & Message (Tin nhắn cuối cùng - Last Message)
+  Conversation.belongsTo(Message, {
+    foreignKey: "lastMessageId",
+    as: "lastMessage",
+    constraints: false,
+  });
+
+  // Conversation & Participant
+  Conversation.hasMany(Participant, {
+    foreignKey: "conversationId",
+    as: "participants",
+    onDelete: "CASCADE",
+  });
+  Participant.belongsTo(Conversation, {
+    foreignKey: "conversationId",
+    as: "conversation",
+  });
+
+  // User & Participant
+  User.hasMany(Participant, { foreignKey: "userId", as: "chatParticipations" });
+  Participant.belongsTo(User, { foreignKey: "userId", as: "userInfo" });
+
+  // Conversation & Message (Lịch sử tin nhắn)
+  Conversation.hasMany(Message, {
+    foreignKey: "conversationId",
+    as: "messages",
+    onDelete: "CASCADE",
+  });
+  Message.belongsTo(Conversation, {
+    foreignKey: "conversationId",
+    as: "conversation",
+  });
+
+  // User & Message
+  User.hasMany(Message, { foreignKey: "senderId", as: "sentMessages" });
+  Message.belongsTo(User, { foreignKey: "senderId", as: "sender" });
+
+  // Message & MessageMedia
+  Message.hasMany(MessageMedia, {
+    foreignKey: "messageId",
+    as: "media",
+    onDelete: "CASCADE",
+  });
+  MessageMedia.belongsTo(Message, { foreignKey: "messageId", as: "message" });
 };
