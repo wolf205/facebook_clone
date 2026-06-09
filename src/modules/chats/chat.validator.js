@@ -1,5 +1,14 @@
 import { z } from "zod";
 
+const mediaSchema = z
+  .array(
+    z.object({
+      url: z.string().url("Đường dẫn media không đúng định dạng URL"),
+      publicId: z.string().min(1, "Thiếu publicId"),
+    }),
+  )
+  .max(10, "Một tin nhắn không được vượt quá 10 file media");
+
 export const postConversationSchema = {
   body: z
     .object({
@@ -36,4 +45,24 @@ export const postConversationSchema = {
         path: ["participants"],
       },
     ),
+};
+
+export const getMessageSchema = {
+  query: z.object({
+    page: z.coerce.number().int().positive().default(1),
+    limit: z.coerce.number().int().positive().max(50).default(10),
+  }),
+
+  params: z.object({
+    id: z.string().uuid("Id không hợp lệ"),
+  }),
+};
+
+export const sendMessageSchema = {
+  body: z.object({
+    conversationId: z.string().uuid("Id không hợp lệ"),
+    content: z.string().optional(),
+    type: z.enum("text", "system", "call").optional().default("text"),
+    media: mediaSchema.optional().default([]),
+  }),
 };

@@ -28,7 +28,7 @@ Message.init(
     },
 
     type: {
-      type: DataTypes.ENUM("text", "image", "video"),
+      type: DataTypes.ENUM("text", "system", "call"),
       defaultValue: "text",
       allowNull: false,
     },

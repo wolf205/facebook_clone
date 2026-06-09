@@ -1,6 +1,8 @@
 import User from "../users/user.model.js";
 import Conversation from "./models/conversation.model.js";
 import Participant from "./models/participant.model.js";
+import Message from "./models/message.model.js";
+import messageMedia from "./models/messageMedia.model.js";
 
 export const chatRepository = {
   createConversation: async ({ participantData, type, name }, options = {}) => {
@@ -28,6 +30,80 @@ export const chatRepository = {
                 ],
               },
             ],
+          },
+        ],
+        ...options,
+      },
+    );
+  },
+
+  isParticipant: async ({ userId, conversationId }) => {
+    const count = await Participant.count({
+      where: {
+        userId,
+        conversationId,
+      },
+    });
+
+    return count > 0;
+  },
+
+  getMessages: async ({ conversationId, page, limit }) => {
+    const offset = (page - 1) * limit;
+
+    const { count, rows } = await Message.findAndCountAll({
+      where: { conversationId },
+      limit: parseInt(limit),
+      offset: parseInt(offset),
+      include: [
+        {
+          model: messageMedia,
+          as: "media",
+          attributes: ["id", "mediaUrl", "mediaType", "orderIndex"],
+        },
+        {
+          model: User,
+          as: "sender",
+          attributes: ["id", "firstName", "lastName", "avatarUrl", "fullName"],
+        },
+      ],
+      order: [["updatedAt", "DESC"]],
+    });
+
+    return {
+      totalItems: count,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
+      limit,
+      messages: rows,
+    };
+  },
+
+  isExistsConversation: async (conversationId) => {
+    const count = await Conversation.count({
+      where: { id: conversationId },
+    });
+
+    return count > 0;
+  },
+
+  sendMessage: async (
+    { userId, conversationId, content, type, formatedMedia },
+    options = {},
+  ) => {
+    return await Message.create(
+      {
+        conversationId,
+        senderId: userId,
+        content,
+        type,
+        media: formatedMedia,
+      },
+      {
+        include: [
+          {
+            model: messageMedia,
+            as: "media",
           },
         ],
         ...options,
