@@ -47,4 +47,16 @@ export const chatController = {
       data: result,
     });
   },
+
+  getConversations: async (req, res) => {
+    const userId = req.user?.id;
+
+    const result = await chatService.getConversations(userId);
+
+    return response(res, {
+      message: "Lấy danh sách các cuộc hội thoại thành công",
+      statusCode: 200,
+      data: result,
+    });
+  },
 };

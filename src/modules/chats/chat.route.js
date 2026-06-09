@@ -28,4 +28,6 @@ router.post(
   asyncHandler(chatController.sendMessage),
 );
 
+router.get("/conversations", asyncHandler(chatController.getConversations));
+
 export default router;

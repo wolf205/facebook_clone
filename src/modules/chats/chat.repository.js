@@ -67,7 +67,7 @@ export const chatRepository = {
           attributes: ["id", "firstName", "lastName", "avatarUrl", "fullName"],
         },
       ],
-      order: [["updatedAt", "DESC"]],
+      order: [["createdAt", "DESC"]],
     });
 
     return {
@@ -108,6 +108,48 @@ export const chatRepository = {
         ],
         ...options,
       },
+    );
+  },
+
+  getConversations: async (userId) => {
+    return await Participant.findAll({
+      where: { userId },
+      include: [
+        {
+          model: Conversation,
+          as: "conversation",
+          include: [
+            {
+              model: Message,
+              as: "lastMessage",
+            },
+            {
+              model: Participant,
+              as: "participants",
+              include: [
+                {
+                  model: User,
+                  as: "userInfo",
+                  attributes: ["id", "firstName", "lastName", "fullName", "avatarUrl"],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+      order: [
+        [{ model: Conversation, as: "conversation" }, "updatedAt", "DESC"],
+      ],
+    });
+  },
+
+  updateLastMessage: async (
+    { conversationId, lastMessageId },
+    options = {},
+  ) => {
+    return await Conversation.update(
+      { lastMessageId },
+      { where: { id: conversationId }, ...options },
     );
   },
 };

@@ -113,11 +113,24 @@ export const chatService = {
         { transaction: t },
       );
 
+      const lastMessageId = message.id;
+
+      await chatRepository.updateLastMessage(
+        { conversationId, lastMessageId },
+        { transaction: t },
+      );
+
       await t.commit();
       return message;
     } catch (error) {
       await t.rollback();
       throw new AppError(error.message, 500);
     }
+  },
+
+  getConversations: async (userId) => {
+    const conversations = await chatRepository.getConversations(userId);
+
+    return conversations;
   },
 };
