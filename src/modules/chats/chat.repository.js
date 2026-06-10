@@ -130,7 +130,13 @@ export const chatRepository = {
                 {
                   model: User,
                   as: "userInfo",
-                  attributes: ["id", "firstName", "lastName", "fullName", "avatarUrl"],
+                  attributes: [
+                    "id",
+                    "firstName",
+                    "lastName",
+                    "fullName",
+                    "avatarUrl",
+                  ],
                 },
               ],
             },
@@ -151,5 +157,15 @@ export const chatRepository = {
       { lastMessageId },
       { where: { id: conversationId }, ...options },
     );
+  },
+
+  getParticipantIds: async (conversationId) => {
+    const participants = await Participant.findAll({
+      where: { conversationId },
+      attributes: ["userId"],
+      raw: true,
+    });
+
+    return participants.map((p) => p.userId);
   },
 };

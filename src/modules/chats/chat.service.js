@@ -3,6 +3,7 @@ import { chatRepository } from "./chat.repository.js";
 import { userRepository } from "../users/user.repository.js";
 import sequelize from "../../shared/config/database.js";
 import { getMediaTypeFromUrl } from "../../shared/utils/file.js";
+import { getIO } from "../../integrations/websocket/socket.service.js";
 
 export const chatService = {
   createConversation: async ({ userId, data }) => {
@@ -121,6 +122,15 @@ export const chatService = {
       );
 
       await t.commit();
+
+      const participants =
+        await chatRepository.getParticipantIds(conversationId);
+
+      const io = getIO();
+      participants.forEach((participantId) => {
+        io.to(participantId).emit("new_message", message);
+      });
+
       return message;
     } catch (error) {
       await t.rollback();

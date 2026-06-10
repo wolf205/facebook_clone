@@ -62,7 +62,7 @@ export const sendMessageSchema = {
   body: z.object({
     conversationId: z.string().uuid("Id không hợp lệ"),
     content: z.string().optional(),
-    type: z.enum("text", "system", "call").optional().default("text"),
+    type: z.enum(["text", "system", "call"]).optional().default("text"),
     media: mediaSchema.optional().default([]),
   }),
 };

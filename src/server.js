@@ -9,6 +9,8 @@ import Post from "./modules/posts/post.model.js";
 import PostMedia from "./modules/posts/postMedia.model.js";
 import FriendRequest from "./modules/friends/friendRequest.model.js";
 import Friendship from "./modules/friends/friendship.model.js";
+import { createServer } from "http";
+import { initSocket } from "./integrations/websocket/socket.service.js";
 
 const startServer = async () => {
   try {
@@ -16,7 +18,10 @@ const startServer = async () => {
     await setupAssociations();
     await initializeMySQL();
 
-    app.listen(env.PORT, () => {
+    const httpServer = createServer(app);
+    initSocket(httpServer);
+
+    httpServer.listen(env.PORT, () => {
       logger.info(
         `Server is running on port ${env.PORT} in ${env.NODE_ENV} mode.`,
       );
