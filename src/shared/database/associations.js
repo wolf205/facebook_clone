@@ -8,6 +8,7 @@ import Participant from "../../modules/chats/models/participant.model.js";
 import Conversation from "../../modules/chats/models/conversation.model.js";
 import Message from "../../modules/chats/models/message.model.js";
 import MessageMedia from "../../modules/chats/models/messageMedia.model.js";
+import Like from "../../modules/likes/like.model.js";
 
 export const setupAssociations = () => {
   // Auth & User
@@ -86,4 +87,31 @@ export const setupAssociations = () => {
     onDelete: "CASCADE",
   });
   MessageMedia.belongsTo(Message, { foreignKey: "messageId", as: "message" });
+
+  // User && Like
+  User.hasMany(Like, { foreignKey: "userId", as: "likes" });
+
+  Like.belongsTo(User, { foreignKey: "userId", as: "user" });
+
+  // Like && Post
+  Post.hasMany(Like, {
+    foreignKey: "targetId",
+    constraints: false,
+    scope: { targetType: "post" },
+    as: "likes",
+  });
+
+  Like.belongsTo(Post, { foreignKey: "targetId", as: "post" });
+
+  // Like && Message
+  Message.hasMany(Like, {
+    foreignKey: "targetId",
+    constraints: false, 
+    scope: { targetType: "message" },
+    as: "likes",
+  });
+
+  Like.belongsTo(Message, { foreignKey: "targetId", as: "message" });
+
+  // Like && Comment
 };

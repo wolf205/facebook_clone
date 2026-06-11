@@ -27,6 +27,12 @@ Message.init(
       allowNull: true,
     },
 
+    likeCount: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
+
     type: {
       type: DataTypes.ENUM("text", "system", "call"),
       defaultValue: "text",

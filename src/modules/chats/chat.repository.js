@@ -38,14 +38,11 @@ export const chatRepository = {
   },
 
   isParticipant: async ({ userId, conversationId }) => {
-    const count = await Participant.count({
-      where: {
-        userId,
-        conversationId,
-      },
+    const participant = await Participant.findOne({
+      where: { userId, conversationId },
     });
 
-    return count > 0;
+    return !!participant;
   },
 
   getMessages: async ({ conversationId, page, limit }) => {
@@ -80,11 +77,11 @@ export const chatRepository = {
   },
 
   isExistsConversation: async (conversationId) => {
-    const count = await Conversation.count({
+    const conversation = await Conversation.findOne({
       where: { id: conversationId },
     });
 
-    return count > 0;
+    return !!conversation;
   },
 
   sendMessage: async (
@@ -167,5 +164,27 @@ export const chatRepository = {
     });
 
     return participants.map((p) => p.userId);
+  },
+
+  incrementLike: async (targetId, options = {}) => {
+    return Message.increment("likeCount", {
+      by: 1,
+      where: { id: targetId },
+      ...options,
+    });
+  },
+
+  decrementLike: async (targetId, options = {}) => {
+    return Message.decrement("likeCount", {
+      by: 1,
+      where: { id: targetId },
+      ...options,
+    });
+  },
+
+  findById: async (targetId) => {
+    return await Message.findOne({
+      where: { id: targetId },
+    });
   },
 };

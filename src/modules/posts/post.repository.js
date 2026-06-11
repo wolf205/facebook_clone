@@ -68,4 +68,26 @@ export const postRepository = {
   deletePostById: async (postId) => {
     return await Post.destroy({ where: { id: postId } });
   },
+
+  findById: async (targetId) => {
+    return await Post.findOne({
+      where: { id: targetId },
+    });
+  },
+
+  incrementLike: async (targetId, options = {}) => {
+    return Post.increment("likeCount", {
+      by: 1,
+      where: { id: targetId },
+      ...options,
+    });
+  },
+
+  decrementLike: async (targetId, options = {}) => {
+    return Post.decrement("likeCount", {
+      by: 1,
+      where: { id: targetId },
+      ...options,
+    });
+  },
 };
