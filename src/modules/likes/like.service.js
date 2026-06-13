@@ -1,5 +1,6 @@
 import { likeRepository } from "./like.repository.js";
 import { AppError } from "../../shared/exceptions/AppError.js";
+import { getIO } from "../../integrations/websocket/socket.service.js";
 import sequelize from "../../shared/config/database.js";
 
 export const likeService = {
@@ -38,6 +39,26 @@ export const likeService = {
       await t.commit();
 
       const updatedTarget = await targetRepository.findById(targetId);
+
+      const io = getIO();
+
+      const payload = {
+        targetId,
+        targetType,
+        likeCount: updatedTarget.likeCount,
+        action: isLiked ? "liked" : "unliked",
+      };
+
+      if (targetType === "message") {
+        const participants = await targetRepository.getParticipantIds(
+          target.conversationId,
+        );
+        participants.forEach((p) => {
+          io.to(p).emit("like_message", payload);
+        });
+      } else if (targetType === "post") {
+        io.to(userId).emit("like_post", payload);
+      }
 
       return {
         liked: isLiked,

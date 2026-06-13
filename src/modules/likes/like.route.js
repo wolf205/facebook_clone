@@ -7,13 +7,13 @@ import express from "express";
 const router = express.Router();
 
 router.post(
-  "/posts/:id",
+  "/posts/:id/likes",
   validateMiddleware(likeSchema),
   asyncHandler(likeController.postLike),
 );
 
 router.post(
-  "/message/:id",
+  "/message/:id/likes",
   validateMiddleware(likeSchema),
   asyncHandler(likeController.messageLike),
 );

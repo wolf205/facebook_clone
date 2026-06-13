@@ -9,6 +9,7 @@ import Conversation from "../../modules/chats/models/conversation.model.js";
 import Message from "../../modules/chats/models/message.model.js";
 import MessageMedia from "../../modules/chats/models/messageMedia.model.js";
 import Like from "../../modules/likes/like.model.js";
+import Comment from "../../modules/comments/comment.model.js";
 
 export const setupAssociations = () => {
   // Auth & User
@@ -106,7 +107,7 @@ export const setupAssociations = () => {
   // Like && Message
   Message.hasMany(Like, {
     foreignKey: "targetId",
-    constraints: false, 
+    constraints: false,
     scope: { targetType: "message" },
     as: "likes",
   });
@@ -114,4 +115,27 @@ export const setupAssociations = () => {
   Like.belongsTo(Message, { foreignKey: "targetId", as: "message" });
 
   // Like && Comment
+  Comment.hasMany(Like, {
+    foreignKey: "targetId",
+    constraints: false,
+    scope: { targetType: "comment" },
+    as: "likes",
+  });
+
+  Like.belongsTo(Comment, { foreignKey: "targetId", as: "comment" });
+
+  // User && Comment
+  User.hasMany(Comment, { foreignKey: "authorId", as: "comments" });
+
+  Comment.belongsTo(User, { foreignKey: "authorId", as: "author" });
+
+  // Post && Comment
+  Post.hasMany(Comment, { foreignKey: "postId", as: "comments" });
+
+  Comment.belongsTo(Post, { foreignKey: "postId", as: "post" });
+
+  // Comment && Comment
+  Comment.hasMany(Comment, { foreignKey: "parentId", as: "children" });
+
+  Comment.belongsTo(Comment, { foreignKey: "parentId", as: "parent" });
 };

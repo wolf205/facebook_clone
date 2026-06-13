@@ -28,6 +28,8 @@ const startServer = async () => {
     });
   } catch (error) {
     logger.error("Error starting server:", error);
+    console.error(error); // THÊM DÒNG NÀY ĐỂ XEM LỖI THỰC SỰ
+    process.exit(1);
   }
 };
 
