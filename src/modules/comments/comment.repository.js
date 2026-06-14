@@ -10,13 +10,19 @@ export const commentRepository = {
     });
   },
 
-  createComment: async ({ authorId, postId, parentId, content }) => {
-    return await Comment.create({
-      authorId,
-      postId,
-      parentId,
-      content,
-    });
+  createComment: async (
+    { authorId, postId, parentId, content },
+    options = {},
+  ) => {
+    return await Comment.create(
+      {
+        authorId,
+        postId,
+        parentId,
+        content,
+      },
+      ...options,
+    );
   },
 
   getComments: async ({ postId, page, limit }) => {

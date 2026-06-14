@@ -90,4 +90,12 @@ export const postRepository = {
       ...options,
     });
   },
+
+  incrementComment: async ({ postId }, options = {}) => {
+    return Post.increment("commentCount", {
+      by: 1,
+      where: { id: postId },
+      ...options,
+    });
+  },
 };

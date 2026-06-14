@@ -10,6 +10,7 @@ import Message from "../../modules/chats/models/message.model.js";
 import MessageMedia from "../../modules/chats/models/messageMedia.model.js";
 import Like from "../../modules/likes/like.model.js";
 import Comment from "../../modules/comments/comment.model.js";
+import Notification from "../../modules/notifications/notification.model.js";
 
 export const setupAssociations = () => {
   // Auth & User
@@ -138,4 +139,14 @@ export const setupAssociations = () => {
   Comment.hasMany(Comment, { foreignKey: "parentId", as: "children" });
 
   Comment.belongsTo(Comment, { foreignKey: "parentId", as: "parent" });
+
+  // User && Notification
+  User.hasMany(Notification, { foreignKey: "userId", as: "notifications" });
+  Notification.belongsTo(User, { foreignKey: "userId", as: "recipent" });
+
+  User.hasMany(Notification, {
+    foreignKey: "senderId",
+    as: "sentNotifications",
+  });
+  Notification.belongsTo(User, { foreignKey: "senderId", as: "sender" });
 };

@@ -12,8 +12,8 @@ export const createSchema = {
 
 export const getSchema = {
   query: z.object({
-    page: z.coerce.number().int().positive().default(1),
-    limit: z.coerce.number().int().positive().max(50).default(10),
+    page: z.coerce.number().int().positive().default(1).optional(),
+    limit: z.coerce.number().int().positive().max(50).default(10).optional(),
   }),
 
   params: z.object({
