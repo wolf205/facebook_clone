@@ -38,7 +38,7 @@ export const commentService = {
 
       const receiverId = parentId ? parent.authorId : post.authorId;
 
-      if (authorId !== post.authorId) {
+      if (authorId !== receiverId) {
         const notification = {
           senderId: authorId,
           receiverId: receiverId,

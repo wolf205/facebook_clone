@@ -1,5 +1,5 @@
 import { notificationService } from "./notification.service.js";
-import { response } from "../../shared\/utils/reponse.js";
+import { response } from "../../shared/utils/reponse.js";
 
 export const notificationController = {
   markReadNotification: async (req, res) => {
@@ -18,7 +18,7 @@ export const notificationController = {
     const userId = req.user?.id;
     const { page, limit } = req.query;
 
-    const result = await notificationService.getNotifications({ userId });
+    const result = await notificationService.getNotifications({ userId, page, limit });
 
     return response(res, {
       message: "Danh sách notification",

@@ -16,15 +16,16 @@ router.get(
 );
 
 router.patch(
+  "/read-all",
+  asyncHandler(notificationController.markReadNotification),
+);
+
+router.patch(
   "/:id",
   validateMiddleware(markReadNotification),
   asyncHandler(notificationController.markReadNotification),
 );
 
-router.patch(
-  "/",
-  validateMiddleware(markReadNotification),
-  asyncHandler(notificationController.markReadNotification),
-);
+
 
 export default router;

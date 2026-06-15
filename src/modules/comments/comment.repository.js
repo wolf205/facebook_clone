@@ -3,10 +3,10 @@ import User from "../users/user.model.js";
 import Comment from "./comment.model.js";
 
 export const commentRepository = {
-  findById: async (parentId) => {
+  findById: async (parentId, options = {}) => {
     return await Comment.findOne({
       where: { id: parentId },
-      attributes: ["id"],
+      ...options,
     });
   },
 
@@ -21,7 +21,7 @@ export const commentRepository = {
         parentId,
         content,
       },
-      ...options,
+      options,
     );
   },
 

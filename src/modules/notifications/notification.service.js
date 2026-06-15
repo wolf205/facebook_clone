@@ -16,7 +16,10 @@ export const notificationService = {
     options = {},
   ) => {
     if (referenceId && targetRepository) {
-      const existingTarget = await targetRepository.findById(referenceId);
+      const existingTarget = await targetRepository.findById(
+        referenceId,
+        options,
+      );
       if (!existingTarget) {
         throw new AppError(
           "Dữ liệu tham chiếu không tồn tại hoặc đã bị xóa",
@@ -26,7 +29,14 @@ export const notificationService = {
       }
 
       const notification = await notificationRepository.createNotification(
-        { userId: receiverId, senderId, type, content, referenceType, referenceId },
+        {
+          userId: receiverId,
+          senderId,
+          type,
+          content,
+          referenceType,
+          referenceId,
+        },
         options,
       );
 
@@ -35,5 +45,32 @@ export const notificationService = {
 
       return notification;
     }
+  },
+
+  markReadNotification: async ({ userId, notificationId }) => {
+    if (!notificationId) {
+      return await notificationRepository.markReadAllNotification(userId);
+    }
+
+    const notification = await notificationRepository.findById({
+      userId,
+      notificationId,
+    });
+
+    if (!notification) {
+      throw new AppError("Không tìm thấy notification", 404, "NOT_FOUND");
+    }
+
+    return await notificationRepository.markReadNotification(
+      notificationId,
+    );
+  },
+
+  getNotifications: async ({ userId, page, limit }) => {
+    return await notificationRepository.getNotifications({
+      userId,
+      page,
+      limit,
+    });
   },
 };

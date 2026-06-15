@@ -8,7 +8,7 @@ export const markReadNotification = {
 
 export const getNotification = {
   query: z.object({
-    page: z.coerce.number().int().positive().defaut(1).optional(),
-    limit: z.coerce.number().int().positive().max(50).defaut(10).optional(),
+    page: z.coerce.number().int().positive().default(1).optional(),
+    limit: z.coerce.number().int().positive().max(50).default(10).optional(),
   }),
 };
