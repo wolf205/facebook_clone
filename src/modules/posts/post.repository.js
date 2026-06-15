@@ -69,9 +69,10 @@ export const postRepository = {
     return await Post.destroy({ where: { id: postId } });
   },
 
-  findById: async (targetId) => {
+  findById: async (targetId, options = {}) => {
     return await Post.findOne({
       where: { id: targetId },
+      ...options,
     });
   },
 

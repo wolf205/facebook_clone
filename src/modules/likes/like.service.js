@@ -2,6 +2,7 @@ import { likeRepository } from "./like.repository.js";
 import { AppError } from "../../shared/exceptions/AppError.js";
 import { getIO } from "../../integrations/websocket/socket.service.js";
 import sequelize from "../../shared/config/database.js";
+import { notificationService } from "../notifications/notification.service.js";
 
 export const likeService = {
   toggleLike: async ({ userId, targetId, targetType, targetRepository }) => {
@@ -34,6 +35,23 @@ export const likeService = {
         );
         await targetRepository.incrementLike(targetId, { transaction: t });
         isLiked = true;
+
+        const notification = {
+          senderId: userId,
+          receiverId: target.authorId,
+          type: targetType === "post" ? "like_post" : "like_comment",
+          content:
+            targetType === "post"
+              ? "Đã like bài viết của bạn"
+              : "Đã like comment của bạn",
+          referenceId: targetId,
+          referenceType: targetType === "post" ? "post" : "comment",
+          targetRepository: targetRepository,
+        };
+
+        await notificationService.createNotification(notification, {
+          transaction: t,
+        });
       }
 
       await t.commit();
